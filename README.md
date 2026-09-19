@@ -1,41 +1,60 @@
-# 🇧🇷 SolidSign API - Front-end de Exemplo: Assinatura XML/XAdES em Nuvem/HSM (React)
-
-Este projeto é a contrapartida visual do back-end [`exemplo-integracao-xml-cloud`](https://github.com/SolidTechSolutions/exemplo-integracao-xml-cloud). Reaproveita a lógica de campos e parâmetros da tela **Assinar XML (Nuvem/HSM)** do Portal SolidSign, simplificada: sem login, sem i18n e sem múltiplos node IDs/nomes/namespaces por documento (o back-end de exemplo aceita apenas um de cada, aplicado a todos os arquivos enviados).
+# 🇧🇷 SolidSign API - Front-end de Exemplo: Assinatura XML com HSM/Nuvem (React)
 
 ## Como funciona
 
-Este front-end fala com o back-end de exemplo local (`POST /api/xml/sign/form`, CORS liberado), que repassa `authorization`/`baseUrl`/`cloudCredentials`, assina, baixa os `.xml` resultantes e devolve um único `.zip` pronto pra download.
+Este front-end chama `POST /api/xml/sign/form` (`http://localhost:8080` por padrão) no back-end de exemplo, enviando as credenciais do HSM/nuvem (`hsmUrl`, `hsmToken`, `uuidCert`). O back-end assina o XML e devolve um `.zip`.
 
-## Pré-requisitos
+## Requisitos
 
-1. Rode o back-end [`exemplo-integracao-xml-cloud`](https://github.com/SolidTechSolutions/exemplo-integracao-xml-cloud) localmente (`mvn spring-boot:run`, porta padrão `8080`).
-2. Tenha um token JWT válido e as credenciais do seu provedor de HSM/nuvem (URL, token de acesso e UUID do certificado).
-3. Saiba o nome (e, se houver, o namespace) do nó XML que deve ser assinado no(s) seu(s) documento(s).
+Rode este back-end de exemplo localmente:
 
-## Rodando
+- **Java**: [`exemplo-integracao-xml-cloud`](https://github.com/SolidTechSolutions/exemplo-integracao-xml-cloud)
+
+- Um token JWT válido (`POST /solidsign/auth/token`)
+
+## Como rodar
 
 ```bash
 npm install
 npm run dev
 ```
 
-Abra `http://localhost:5173`, preencha o formulário e assine.
+Abra `http://localhost:5173`, preencha o formulário e envie.
+
+## Variáveis do formulário
+
+| Campo | Significado | Default |
+|---|---|---|
+| `baseUrl` | URL base da SolidSign API | `https://www.solidsign.com.br` |
+| `authorization` | Token JWT (Bearer) | (vazio) |
+| `hsmUrl / hsmToken / uuidCert` | Credenciais do HSM/PSC de nuvem | (vazio) |
+| `documents` | XML(s) a assinar | (vazio) |
+| `profile` | Perfil de assinatura PBAD/ETSI | `ADRB` |
+| `hashAlgorithm` | Algoritmo de hash | `SHA256` |
+| `signaturePackaging` | Empacotamento XML-DSig | `ENVELOPED` |
+| `canonicalizationMethod` | Método de canonicalização | `EXCLUSIVE` |
+| `signatureNodeName` | Nome do nó a assinar | `document` |
+| `signatureNodeNamespace` | Namespace do nó (opcional) | (vazio) |
+| `signatureNodeId` | ID do nó, tem prioridade sobre nome/namespace (opcional) | (vazio) |
+| `isRemoveXPathExclusionFilter` | Remover filtro de exclusão XPath | `false` |
+| `isRemoveNamespacePrefixFromNodeNames` | Remover prefixo de namespace dos nomes de nó | `false` |
+| `isSignKeyInfo` | Assinar o KeyInfo | `false` |
 
 ---
 
-# 🇬🇧 SolidSign API - Example Front-end: Cloud/HSM XML/XAdES Signing (React)
-
-This project is the visual counterpart to the [`exemplo-integracao-xml-cloud`](https://github.com/SolidTechSolutions/exemplo-integracao-xml-cloud) backend. It reuses the field logic from the Portal SolidSign **Sign XML (Cloud/HSM)** screen, simplified: no login, no i18n and no multiple node IDs/names/namespaces per document (the example backend only accepts one of each, applied to every uploaded file).
+# 🇬🇧 SolidSign API - Example Front-end: XML Signing with HSM/Cloud (React)
 
 ## How it works
 
-This front-end talks to the local example backend (`POST /api/xml/sign/form`, CORS enabled), which forwards `authorization`/`baseUrl`/`cloudCredentials`, signs, downloads the resulting `.xml` files and returns a single ready-to-download `.zip`.
+This front-end calls `POST /api/xml/sign/form` (`http://localhost:8080` by default) on the example backend, sending the HSM/cloud credentials (`hsmUrl`, `hsmToken`, `uuidCert`). The backend signs the XML and returns a `.zip`.
 
-## Prerequisites
+## Requirements
 
-1. Run the [`exemplo-integracao-xml-cloud`](https://github.com/SolidTechSolutions/exemplo-integracao-xml-cloud) backend locally (`mvn spring-boot:run`, default port `8080`).
-2. Have a valid JWT token and your cloud/HSM provider credentials (URL, access token and certificate UUID).
-3. Know the name (and namespace, if any) of the XML node that must be signed in your document(s).
+Run this example backend locally:
+
+- **Java**: [`exemplo-integracao-xml-cloud`](https://github.com/SolidTechSolutions/exemplo-integracao-xml-cloud)
+
+- A valid JWT token (`POST /solidsign/auth/token`)
 
 ## Running
 
@@ -44,4 +63,23 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:5173`, fill in the form and sign.
+Open `http://localhost:5173`, fill in the form and submit.
+
+## Form fields
+
+| Field | Meaning | Default |
+|---|---|---|
+| `baseUrl` | SolidSign API base URL | `https://www.solidsign.com.br` |
+| `authorization` | JWT (Bearer) token | (empty) |
+| `hsmUrl / hsmToken / uuidCert` | Cloud HSM/PSC credentials | (empty) |
+| `documents` | XML(s) to sign | (empty) |
+| `profile` | PBAD/ETSI signature profile | `ADRB` |
+| `hashAlgorithm` | Hash algorithm | `SHA256` |
+| `signaturePackaging` | XML-DSig packaging | `ENVELOPED` |
+| `canonicalizationMethod` | Canonicalization method | `EXCLUSIVE` |
+| `signatureNodeName` | Name of the node to sign | `document` |
+| `signatureNodeNamespace` | Node namespace (optional) | (empty) |
+| `signatureNodeId` | Node ID, takes priority over name/namespace (optional) | (empty) |
+| `isRemoveXPathExclusionFilter` | Remove the XPath exclusion filter | `false` |
+| `isRemoveNamespacePrefixFromNodeNames` | Remove the namespace prefix from node names | `false` |
+| `isSignKeyInfo` | Sign the KeyInfo | `false` |
